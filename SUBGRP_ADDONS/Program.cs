@@ -1,6 +1,7 @@
 ﻿using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
+using SUBGRP_ADDONS.Modules;
 
 namespace SUBGRP_ADDONS
 {
@@ -27,6 +28,10 @@ namespace SUBGRP_ADDONS
                 }
                 Menu MyMenu = new Menu();
                 MyMenu.BasicStart();
+
+                ItemGroups objIGRP;
+                objIGRP = new ItemGroups();
+
                 oApp.RegisterMenuEventHandler(MyMenu.SBO_Application_MenuEvent);
                 Application.SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);
                 oApp.Run();

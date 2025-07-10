@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Helper\Global.cs" />
     <Compile Include="Helper\GlobalFunction.cs" />
+    <Compile Include="Modules\ItemGroups.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,9 +56,7 @@
       <DependentUpon>SUBGRP_MASTER_DATA_FRM.b1f</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modules\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\SUBGRP_MASTER_DATA_FRM.b1f">
       <FormCategory>UserForm</FormCategory>
