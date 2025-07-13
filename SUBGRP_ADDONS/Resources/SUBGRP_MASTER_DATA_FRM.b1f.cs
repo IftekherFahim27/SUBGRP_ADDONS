@@ -30,6 +30,7 @@ namespace SUBGRP_ADDONS.Resources
             this.ETSGRNAM = ((SAPbouiCOM.EditText)(this.GetItem("ETSGRNAM").Specific));
             this.STSGRNAM = ((SAPbouiCOM.StaticText)(this.GetItem("STSGRNAM").Specific));
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
             this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.EditText2 = ((SAPbouiCOM.EditText)(this.GetItem("ETDNTRY").Specific));
@@ -65,69 +66,106 @@ namespace SUBGRP_ADDONS.Resources
         private void CBSERISE_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-            SAPbouiCOM.ComboBox oCombo = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERISE").Specific;
 
-            string selectedValue = oCombo.Value;
-            int series = int.Parse(selectedValue);      // Converts to int
-
-            oForm.Freeze(true);
-
-            //Item Group Code 
-            //string sqlQuery = string.Format(@" SELECT DISTINCT OITM.{0}ItmsGrpCod{0}, OITB.{0}ItmsGrpNam{0} FROM OITM INNER JOIN OITB ON OITM.{0}ItmsGrpCod{0} = OITB.{0}ItmsGrpCod{0} WHERE  OITM.{0}Series{0} = {1}", '"', series);
-            string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', series);
-            SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBIGRCOD").Specific;   //object defining- Define a combo box
-
-            // 🧹 Clear existing combo values
-            for (int i = CBIGRCOD.ValidValues.Count - 1; i >= 0; i--)
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
             {
-                CBIGRCOD.ValidValues.Remove(i, SAPbouiCOM.BoSearchKey.psk_Index);
+
+                SAPbouiCOM.ComboBox oCombo = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERISE").Specific;
+                string selectedValue = oCombo.Value;
+                    
+
+                oForm.Freeze(true);
+
+                //Item Group Code 
+                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
+                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBIGRCOD").Specific;   //object defining- Define a combo box
+
+                // 🧹 Clear existing combo values
+                for (int i = CBIGRCOD.ValidValues.Count - 1; i >= 0; i--)
+                {
+                    CBIGRCOD.ValidValues.Remove(i, SAPbouiCOM.BoSearchKey.psk_Index);
+                }
+
+                // ➕ Add default item at top: "Select"
+                CBIGRCOD.ValidValues.Add("0", "Select");
+                CBIGRCOD.Select("0", SAPbouiCOM.BoSearchKey.psk_ByValue);
+
+                // 🔁 Populate from SQL
+                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
+
+
+                oForm.Freeze(false);
+
             }
-
-            // ➕ Add default item at top: "Select"
-            CBIGRCOD.ValidValues.Add("0", "Select");
-            CBIGRCOD.Select("0", SAPbouiCOM.BoSearchKey.psk_ByValue);
-
-            // 🔁 Populate from SQL
-            Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
-           
-
-            oForm.Freeze(false);
         }
+
+        //private void CBIGRCOD_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        //{
+        //    try
+        //    {
+        //        SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+        //        SAPbouiCOM.ComboBox oCombo = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBIGRCOD").Specific;
+        //        string selectedValue = oCombo.Value; // U_ITMGRCOD selected
+        //        string nextCode = "SubGrp 1"; // Default if no match found
+
+        //        // SQL to get max SubGrp number for the selected U_ITMGRCOD
+        //        string query = $@"
+        //    SELECT MAX(CAST(SUBSTRING(""Code"", 8) AS INTEGER)) AS MaxNum 
+        //    FROM ""@FIL_MH_SUBGRP"" 
+        //    WHERE ""U_ITMGRCOD"" = '{selectedValue}' 
+        //      AND ""Code"" LIKE 'SubGrp %'";
+
+        //        SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+        //        rs.DoQuery(query);
+
+        //        if (!rs.EoF && rs.Fields.Item("MaxNum").Value != null && rs.Fields.Item("MaxNum").Value.ToString() != "")
+        //        {
+        //            int maxNum = Convert.ToInt32(rs.Fields.Item("MaxNum").Value);
+        //            nextCode = "SubGrp " + (maxNum + 1);
+        //        }
+
+        //        // Set nextCode in the EditText bound to "Code"
+        //        SAPbouiCOM.EditText oEdit = (SAPbouiCOM.EditText)oForm.Items.Item("ETSGRCOD").Specific;
+        //        oEdit.Value = nextCode;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Application.SBO_Application.StatusBar.SetText("Error: " + ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+        //    }
+        //}
 
         private void CBIGRCOD_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
             {
                 SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-                SAPbouiCOM.ComboBox oCombo = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBIGRCOD").Specific;
-                string selectedValue = oCombo.Value; // U_ITMGRCOD selected
-                string nextCode = "SubGrp 1"; // Default if no match found
-
-                // SQL to get max SubGrp number for the selected U_ITMGRCOD
-                string query = $@"
-            SELECT MAX(CAST(SUBSTRING(""Code"", 8) AS INTEGER)) AS MaxNum 
-            FROM ""@FIL_MH_SUBGRP"" 
-            WHERE ""U_ITMGRCOD"" = '{selectedValue}' 
-              AND ""Code"" LIKE 'SubGrp %'";
-
-                SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                rs.DoQuery(query);
-
-                if (!rs.EoF && rs.Fields.Item("MaxNum").Value != null && rs.Fields.Item("MaxNum").Value.ToString() != "")
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
                 {
-                    int maxNum = Convert.ToInt32(rs.Fields.Item("MaxNum").Value);
-                    nextCode = "SubGrp " + (maxNum + 1);
-                }
+                    int nextCode = 101; // Default value
+                    string query = $@"SELECT IFNULL(MAX(CAST(""Code"" AS INTEGER)), 0) AS MaxCode FROM ""@FIL_MH_SUBGRP"" ";
 
-                // Set nextCode in the EditText bound to "Code"
-                SAPbouiCOM.EditText oEdit = (SAPbouiCOM.EditText)oForm.Items.Item("ETSGRCOD").Specific;
-                oEdit.Value = nextCode;
+                    SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                    rs.DoQuery(query);
+
+                    int maxCode = Convert.ToInt32(rs.Fields.Item("MaxCode").Value);
+
+                    if (maxCode >= 101)
+                    {
+                        nextCode = maxCode + 1;
+                    }
+
+                    SAPbouiCOM.EditText oEdit = (SAPbouiCOM.EditText)oForm.Items.Item("ETSGRCOD").Specific;
+                    oEdit.Value = nextCode.ToString();
+
+                }
             }
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText("Error: " + ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
         }
+
+
 
         private void ADDButton_PressedBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
         {
@@ -137,6 +175,7 @@ namespace SUBGRP_ADDONS.Resources
             {
                 ValidateForm(ref oform, ref BubbleEvent);
             }
+            
 
         }
 
@@ -172,5 +211,41 @@ namespace SUBGRP_ADDONS.Resources
             return BubbleEvent;
         }
 
+        private void ADDButton_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form ofrm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            if (ofrm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE)
+            {
+                ofrm.Items.Item("ETSGRCOD").Enabled = false;
+            }
+            if(ofrm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+            {
+                ofrm.Freeze(true);
+
+                //Series Combo box
+                string sqlQuerySeries = string.Format("SELECT {0}Series{0}, {0}SeriesName{0} FROM {0}NNM1{0} WHERE {0}ObjectCode{0} = '4'", '"');
+                SAPbouiCOM.ComboBox CBSERISE = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;   //object defining- Define a combo box
+                Global.GFunc.setComboBoxValue(CBSERISE, sqlQuerySeries);
+
+                ofrm.Freeze(false);
+
+
+                SAPbouiCOM.ComboBox oCombo = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
+                string selectedValue = oCombo.Value;      
+
+                ofrm.Freeze(true);
+
+                
+                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
+                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;   //object defining- Define a combo box
+
+
+                //// 🔁 Populate from SQL
+                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
+
+                ofrm.Freeze(false);
+            }
+
+        }
     }
 }

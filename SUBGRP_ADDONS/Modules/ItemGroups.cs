@@ -113,7 +113,7 @@ namespace SUBGRP_ADDONS.Modules
                         CBITMGRP.LinkTo = "STITMGRP";
 
 
-
+                       // oform.Items.Item("39").Enabled = false;
 
                     }
 
@@ -137,8 +137,8 @@ namespace SUBGRP_ADDONS.Modules
                         }
 
                         // ➕ Add default item at top: "Select"
-                        ComBoIGRP.ValidValues.Add("0", "Select");
-                        ComBoIGRP.Select("0", SAPbouiCOM.BoSearchKey.psk_ByValue);
+                        ComBoIGRP.ValidValues.Add("-", "Select");
+                        ComBoIGRP.Select("-", SAPbouiCOM.BoSearchKey.psk_ByValue);
 
                         Global.GFunc.setComboBoxValue(ComBoIGRP, sqlQuerySubGrp);
 
@@ -157,7 +157,7 @@ namespace SUBGRP_ADDONS.Modules
                         Global.GFunc.setComboBoxValue(ComBoSUIGRP, sqlQuerySubGrp);
                     }
 
-                    
+
 
 
                     if (pVal.FormTypeEx == "150" && pVal.ItemUID == "CBITMGRP" && pVal.EventType == SAPbouiCOM.BoEventTypes.et_COMBO_SELECT && pVal.BeforeAction == false)
@@ -167,19 +167,22 @@ namespace SUBGRP_ADDONS.Modules
 
 
                         //standard
-                        if (selectedValue != "0")
+                        if (selectedValue != "-")
                         {
                             SAPbouiCOM.ComboBox ComBoSIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("39").Specific;
                             ComBoSIGRP.Select(selectedValue, SAPbouiCOM.BoSearchKey.psk_ByValue);
+                            
+
                         }
-                        
+                        else
+                        {
+                            string defaultValue = "100";
+                            SAPbouiCOM.ComboBox ComBoSIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("39").Specific;
+                            ComBoSIGRP.Select(defaultValue, SAPbouiCOM.BoSearchKey.psk_ByValue);
+                            
+                        }
+
                     }
-
-
-
-
-
-
                 }
             }
             catch (Exception ex)

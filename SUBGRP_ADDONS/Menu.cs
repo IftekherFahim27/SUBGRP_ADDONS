@@ -51,7 +51,12 @@ namespace SUBGRP_ADDONS
 
                     try
                     {
-                        InitializeSUBGRPForm(ofrm);
+                        if (ofrm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE || ofrm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                        {
+                            InitializeSUBGRPForm(ofrm);
+                            ofrm.Items.Item("ETSGRCOD").Enabled = false;
+                        }
+
                     }
                     catch (Exception e)
                     {
@@ -71,16 +76,33 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
-                               
+                                InitializeSUBGRPForm(ofrm);
+                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
+                                ofrm.Freeze(true);
 
+                                //Item Group Combo box
+                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
+                                string selectedValue = oComboSeries.Value;
+                                
+                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
+                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
+                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
+
+                                ofrm.Freeze(false);
                                 break;
                             }
-                       
-
+                      
+                    }
+                    string standardformtype = ofrm.Type.ToString();
+                    switch (standardformtype)
+                    {
+                        case "150":
+                            {
+                                //InitializeItemMasterForm(ofrm);
+                                break;
+                            }
 
                     }
-
-
 
                 }
                 //Find Mode
@@ -92,11 +114,38 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
-                                //InitializeMasterLCForm(ofrm);
+                                try
+                                {
+                                   
+                                    ofrm.Items.Item("ETSGRCOD").Enabled = true;
+
+                                    InitializeSUBGRPForm(ofrm);
+
+                                    ofrm.Freeze(true);
+                                    string sqlQuery = @"SELECT ""ItmsGrpCod"", ""ItmsGrpNam"" FROM ""OITB""";
+                                    SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
+                                    Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery);
+
+                                    ofrm.Freeze(false);
+                                }
+                                catch(Exception e)
+                                {
+                                    Application.SBO_Application.MessageBox("Error Found : " + e.Message);
+                                }
+                                
+
                                 break;
                             }
-                        
+                    }
 
+                    string standardformtype = ofrm.Type.ToString();
+                    switch (standardformtype)
+                    {
+                        case "150":
+                            {
+                                InitializeItemMasterForm(ofrm);
+                                break;
+                            }
 
                     }
                 }
@@ -109,11 +158,31 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
-                              
+                                InitializeSUBGRPForm(ofrm);
+                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
+                                ofrm.Freeze(true);
+
+                                //Item Group Combo box
+                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
+                                string selectedValue = oComboSeries.Value;
+                                
+                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
+                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
+                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
+
+                                ofrm.Freeze(false);
                                 break;
                             }
-                      
-
+                       
+                    }
+                    string standardformtype = ofrm.Type.ToString();
+                    switch (standardformtype)
+                    {
+                        case "150":
+                            {
+                                InitializeItemMasterForm(ofrm);
+                                break;
+                            }
 
                     }
                 }
@@ -126,11 +195,31 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
+                                InitializeSUBGRPForm(ofrm);
+                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
+                                ofrm.Freeze(true);
 
+                                //Item Group Combo box
+                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
+                                string selectedValue = oComboSeries.Value;
+                               
+                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
+                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
+                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
+
+                                ofrm.Freeze(false);
                                 break;
                             }
-                     
-
+                       
+                    }
+                    string standardformtype = ofrm.Type.ToString();
+                    switch (standardformtype)
+                    {
+                        case "150":
+                            {
+                                InitializeItemMasterForm(ofrm);
+                                break;
+                            }
 
                     }
                 }
@@ -143,10 +232,31 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
+                                InitializeSUBGRPForm(ofrm);
+                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
+                                ofrm.Freeze(true);
 
+                                //Item Group Combo box
+                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
+                                string selectedValue = oComboSeries.Value;
+                               
+                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
+                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
+                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
+
+                                ofrm.Freeze(false);
                                 break;
                             }
-                       
+
+                    }
+                    string standardformtype = ofrm.Type.ToString();
+                    switch (standardformtype)
+                    {
+                        case "150":
+                            {
+                                InitializeItemMasterForm(ofrm);
+                                break;
+                            }
 
                     }
                 }
@@ -159,11 +269,31 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
+                                InitializeSUBGRPForm(ofrm);
+                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
+                                ofrm.Freeze(true);
 
+                                //Item Group Combo box
+                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
+                                string selectedValue = oComboSeries.Value;
+                              
+                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
+                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
+                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
+
+                                ofrm.Freeze(false);
                                 break;
                             }
-                       
-                       
+
+                    }
+                    string standardformtype = ofrm.Type.ToString();
+                    switch (standardformtype)
+                    {
+                        case "150":
+                            {
+                                InitializeItemMasterForm(ofrm);
+                                break;
+                            }
 
                     }
                 }
@@ -309,10 +439,34 @@ namespace SUBGRP_ADDONS
                 SAPbouiCOM.ComboBox CBSERISE = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;   //object defining- Define a combo box
                 Global.GFunc.setComboBoxValue(CBSERISE, sqlQuerySeries);
 
+
+                
             }
             finally
             {
                ofrm.Freeze(false);
+            }
+        }
+
+        private void InitializeItemMasterForm(SAPbouiCOM.Form ofrm)
+        {
+            try
+            {
+                ofrm.Freeze(true);
+
+                SAPbouiCOM.ComboBox ComBoSIGRP = (SAPbouiCOM.ComboBox)ofrm.Items.Item("39").Specific;
+                string selectedValue = ComBoSIGRP.Selected.Value;
+
+                if (selectedValue != "100")
+                {
+                    SAPbouiCOM.ComboBox CBIGRP = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBITMGRP").Specific;
+                    CBIGRP.Select(selectedValue, SAPbouiCOM.BoSearchKey.psk_ByValue);
+                }
+
+            }
+            finally
+            {
+                ofrm.Freeze(false);
             }
         }
     }
