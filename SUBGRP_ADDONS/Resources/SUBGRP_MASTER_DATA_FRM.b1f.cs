@@ -74,7 +74,7 @@ namespace SUBGRP_ADDONS.Resources
 
             //Item Group Code 
             //string sqlQuery = string.Format(@" SELECT DISTINCT OITM.{0}ItmsGrpCod{0}, OITB.{0}ItmsGrpNam{0} FROM OITM INNER JOIN OITB ON OITM.{0}ItmsGrpCod{0} = OITB.{0}ItmsGrpCod{0} WHERE  OITM.{0}Series{0} = {1}", '"', series);
-            string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_Series{0} = {1}", '"', series);
+            string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', series);
             SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBIGRCOD").Specific;   //object defining- Define a combo box
 
             // 🧹 Clear existing combo values

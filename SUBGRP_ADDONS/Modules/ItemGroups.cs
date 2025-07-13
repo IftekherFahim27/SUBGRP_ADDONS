@@ -116,17 +116,6 @@ namespace SUBGRP_ADDONS.Modules
 
 
                     }
-                    if (pVal.FormTypeEx == "150" && pVal.ItemUID == "39" && pVal.EventType == SAPbouiCOM.BoEventTypes.et_COMBO_SELECT && pVal.BeforeAction == false)
-                    {
-                        SAPbouiCOM.ComboBox ComBSUIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("39").Specific;
-                        string selectedValue = ComBSUIGRP.Selected.Value;
-
-                        // Build query to get sub groups for selected U_ITMGRCOD
-                        string sqlQuerySubGrp = string.Format("SELECT {0}Code{0}, {0}Name{0} FROM {0}@FIL_MH_SUBGRP{0} WHERE {0}U_ITMGRCOD{0} = '{1}'",'"', selectedValue);
-
-                        SAPbouiCOM.ComboBox ComBoSUIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("CBSUIGRP").Specific;
-                        Global.GFunc.setComboBoxValue(ComBoSUIGRP, sqlQuerySubGrp);
-                    }
 
                     if (pVal.FormTypeEx == "150" && pVal.ItemUID == "1320002059" && pVal.EventType == SAPbouiCOM.BoEventTypes.et_COMBO_SELECT && pVal.BeforeAction == false)
                     {
@@ -139,6 +128,8 @@ namespace SUBGRP_ADDONS.Modules
 
                         SAPbouiCOM.ComboBox ComBoIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("CBITMGRP").Specific;
 
+                        oform.Freeze(true);
+
                         // 🧹 Clear existing combo values
                         for (int i = ComBoIGRP.ValidValues.Count - 1; i >= 0; i--)
                         {
@@ -150,20 +141,37 @@ namespace SUBGRP_ADDONS.Modules
                         ComBoIGRP.Select("0", SAPbouiCOM.BoSearchKey.psk_ByValue);
 
                         Global.GFunc.setComboBoxValue(ComBoIGRP, sqlQuerySubGrp);
+
+                        oform.Freeze(false);
                     }
+
+                    if (pVal.FormTypeEx == "150" && pVal.ItemUID == "39" && pVal.EventType == SAPbouiCOM.BoEventTypes.et_COMBO_SELECT && pVal.BeforeAction == false)
+                    {
+                        SAPbouiCOM.ComboBox ComBSUIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("39").Specific;
+                        string selectedValue = ComBSUIGRP.Selected.Value;
+
+                        // Build query to get sub groups for selected U_ITMGRCOD
+                        string sqlQuerySubGrp = string.Format("SELECT {0}Code{0}, {0}Name{0} FROM {0}@FIL_MH_SUBGRP{0} WHERE {0}U_ITMGRCOD{0} = '{1}'",'"', selectedValue);
+
+                        SAPbouiCOM.ComboBox ComBoSUIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("CBSUIGRP").Specific;
+                        Global.GFunc.setComboBoxValue(ComBoSUIGRP, sqlQuerySubGrp);
+                    }
+
+                    
 
 
                     if (pVal.FormTypeEx == "150" && pVal.ItemUID == "CBITMGRP" && pVal.EventType == SAPbouiCOM.BoEventTypes.et_COMBO_SELECT && pVal.BeforeAction == false)
                     {
                         SAPbouiCOM.ComboBox CBIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("CBITMGRP").Specific;
                         string selectedValue = CBIGRP.Selected.Value;
-                       
+
 
                         //standard
-
-                        SAPbouiCOM.ComboBox ComBoSIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("39").Specific;                       
-                        ComBoSIGRP.Select(selectedValue, SAPbouiCOM.BoSearchKey.psk_ByValue);
-
+                        if (selectedValue != "0")
+                        {
+                            SAPbouiCOM.ComboBox ComBoSIGRP = (SAPbouiCOM.ComboBox)oform.Items.Item("39").Specific;
+                            ComBoSIGRP.Select(selectedValue, SAPbouiCOM.BoSearchKey.psk_ByValue);
+                        }
                         
                     }
 
