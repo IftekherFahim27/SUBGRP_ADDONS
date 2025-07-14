@@ -32,6 +32,10 @@ namespace SUBGRP_ADDONS
                 ItemGroups objIGRP;
                 objIGRP = new ItemGroups();
 
+                ComboLoadAfter objCLA;
+                objCLA = new ComboLoadAfter();
+               
+
                 oApp.RegisterMenuEventHandler(MyMenu.SBO_Application_MenuEvent);
                 Application.SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);
                 oApp.Run();

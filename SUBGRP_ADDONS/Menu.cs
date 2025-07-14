@@ -12,18 +12,7 @@ namespace SUBGRP_ADDONS
         public void BasicStart()
         {
             CompanyConnection(); //1)Company connection 
-
-            //Parent
-            //CreateMainMenu("43520", "3073", "Inventory", 8, 2, false);//parent 2 step
-
-            //Sub Menu
-            //CreateMainMenu("3073", "SUBMN__SUBGRP", "Sub Group Master Data", 1, 1, false);
-            //CreateMainMenu("FIL_MN_LC", "SUBMN_B2BLC", "Import LC/TT/RTGS LC (Back To Back)", 1, 2, false);
-            //CreateMainMenu("FIL_MN_LC", "SUBMN_SALESCONTRACT", "Sales Contract", 2, 2, false);
-
             CreateMainMenu("3072", "SUBMN__SUBGRP", "Sub Group Master Data", 1, 1, false);
-
-
         }
 
 
@@ -56,6 +45,7 @@ namespace SUBGRP_ADDONS
                             InitializeSUBGRPForm(ofrm);
                             ofrm.Items.Item("ETSGRCOD").Enabled = false;
                         }
+                        
 
                     }
                     catch (Exception e)
@@ -66,7 +56,6 @@ namespace SUBGRP_ADDONS
 
 
                 }
-               
                 //Add Form Mode Menu
                 else if (!pVal.BeforeAction && pVal.MenuUID == "1282")
                 {
@@ -76,19 +65,17 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
-                                InitializeSUBGRPForm(ofrm);
-                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
-                                ofrm.Freeze(true);
+                                try
+                                {
+                                    //InitializeSUBGRPForm(ofrm);
+                                    //ofrm.Items.Item("ETSGRCOD").Enabled = false;
 
-                                //Item Group Combo box
-                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
-                                string selectedValue = oComboSeries.Value;
-                                
-                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
-                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
-                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
 
-                                ofrm.Freeze(false);
+                                }
+                                catch(Exception e)
+                                {
+                                    Application.SBO_Application.MessageBox("Error Found : " + e.Message);
+                                }
                                 break;
                             }
                       
@@ -122,11 +109,14 @@ namespace SUBGRP_ADDONS
                                     InitializeSUBGRPForm(ofrm);
 
                                     ofrm.Freeze(true);
-                                    string sqlQuery = @"SELECT ""ItmsGrpCod"", ""ItmsGrpNam"" FROM ""OITB""";
+
+                                    string sqlQuery = @"SELECT ""ItmsGrpCod"", ""ItmsGrpNam"" FROM ""OITB"" ORDER BY ""U_SERIES""";
+                                    
                                     SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
                                     Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery);
 
                                     ofrm.Freeze(false);
+
                                 }
                                 catch(Exception e)
                                 {
@@ -158,19 +148,7 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
-                                InitializeSUBGRPForm(ofrm);
-                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
-                                ofrm.Freeze(true);
-
-                                //Item Group Combo box
-                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
-                                string selectedValue = oComboSeries.Value;
-                                
-                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
-                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
-                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
-
-                                ofrm.Freeze(false);
+                                LoadSubGroupItemGroup(ofrm);
                                 break;
                             }
                        
@@ -195,19 +173,7 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
-                                InitializeSUBGRPForm(ofrm);
-                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
-                                ofrm.Freeze(true);
-
-                                //Item Group Combo box
-                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
-                                string selectedValue = oComboSeries.Value;
-                               
-                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
-                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
-                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
-
-                                ofrm.Freeze(false);
+                                LoadSubGroupItemGroup(ofrm);
                                 break;
                             }
                        
@@ -232,19 +198,7 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
-                                InitializeSUBGRPForm(ofrm);
-                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
-                                ofrm.Freeze(true);
-
-                                //Item Group Combo box
-                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
-                                string selectedValue = oComboSeries.Value;
-                               
-                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
-                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
-                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
-
-                                ofrm.Freeze(false);
+                                LoadSubGroupItemGroup(ofrm);
                                 break;
                             }
 
@@ -269,19 +223,7 @@ namespace SUBGRP_ADDONS
                     {
                         case "FRMSBGRP":
                             {
-                                InitializeSUBGRPForm(ofrm);
-                                ofrm.Items.Item("ETSGRCOD").Enabled = false;
-                                ofrm.Freeze(true);
-
-                                //Item Group Combo box
-                                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
-                                string selectedValue = oComboSeries.Value;
-                              
-                                string sqlQuery2 = string.Format(@" SELECT {0}ItmsGrpCod{0}, {0}ItmsGrpNam{0} FROM OITB WHERE  {0}U_SERIES{0} = {1}", '"', selectedValue);
-                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
-                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery2);
-
-                                ofrm.Freeze(false);
+                                LoadSubGroupItemGroup(ofrm);
                                 break;
                             }
 
@@ -439,8 +381,7 @@ namespace SUBGRP_ADDONS
                 SAPbouiCOM.ComboBox CBSERISE = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;   //object defining- Define a combo box
                 Global.GFunc.setComboBoxValue(CBSERISE, sqlQuerySeries);
 
-
-                
+               
             }
             finally
             {
@@ -469,5 +410,41 @@ namespace SUBGRP_ADDONS
                 ofrm.Freeze(false);
             }
         }
+
+        private void LoadSubGroupItemGroup(SAPbouiCOM.Form ofrm)
+        {
+            InitializeSUBGRPForm(ofrm);
+            ofrm.Items.Item("ETSGRCOD").Enabled = false;
+
+            try
+            {
+                ofrm.Freeze(true);
+
+                SAPbouiCOM.ComboBox oComboSeries = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
+                string selectedValue = oComboSeries.Value;
+
+                
+                
+                    if (int.TryParse(selectedValue, out int seriesNumeric))
+                    {
+                        string sqlQuery = $@"SELECT ""ItmsGrpCod"", ""ItmsGrpNam"" FROM ""OITB"" WHERE ""U_SERIES"" = {seriesNumeric}";
+                        SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
+                        Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery);
+                    }
+                    else
+                    {
+                        Application.SBO_Application.StatusBar.SetText("Invalid Series value. Must be a number.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                    }
+                
+
+            }
+            finally
+            {
+                ofrm.Freeze(false);
+            }
+        }
+
+
     }
 }

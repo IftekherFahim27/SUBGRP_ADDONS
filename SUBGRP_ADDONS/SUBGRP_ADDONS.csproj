@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Helper\Global.cs" />
     <Compile Include="Helper\GlobalFunction.cs" />
+    <Compile Include="Modules\ComboLoadAfter.cs" />
     <Compile Include="Modules\ItemGroups.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
