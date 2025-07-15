@@ -21,41 +21,70 @@ namespace SUBGRP_ADDONS.Modules
             BubbleEvent = true;
 
             if (pVal.FormTypeEx == "9999" && pVal.ItemUID == "1" &&
-                pVal.EventType == SAPbouiCOM.BoEventTypes.et_CLICK &&
-                pVal.BeforeAction == false)
+    pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED 
+    )
             {
-                Application.SBO_Application.StatusBar.SetText("Form 9999 Button 1 Pressed", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
-
-                // Example: Get back to your main form and set to OK mode
-                SAPbouiCOM.Form ofrm = Application.SBO_Application.Forms.Item("FRMSBGRP");
-                if (ofrm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE || ofrm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE)
+                try
                 {
-                    ofrm.Freeze(true);
-
-                    // Populate Series ComboBox
-                    string sqlQuerySeries = @"SELECT ""Series"", ""SeriesName"" FROM ""NNM1"" WHERE ""ObjectCode"" = '4'";
-                    SAPbouiCOM.ComboBox CBSERISE = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
-                    Global.GFunc.setComboBoxValue(CBSERISE, sqlQuerySeries);
-
-                    // Get selected value from CBSERISE
-                    string selectedValue = CBSERISE.Value;
-
-                    if (!string.IsNullOrEmpty(selectedValue))
+                    // Make sure FRMSBGRP is open
+                    SAPbouiCOM.Form ofrm;
+                    try
                     {
-                        if (int.TryParse(selectedValue, out int seriesNumeric))
+                        ofrm = Application.SBO_Application.Forms.Item("FRMSBGRP");
+                    }
+                    catch
+                    {
+                        Application.SBO_Application.StatusBar.SetText("FRMSBGRP form is not open.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                        return;
+                    }
+
+                    if (ofrm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE || ofrm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE)
+                    {
+                        //ofrm.Select(); // Bring FRMSBGRP to focus
+                        ofrm.Freeze(true);
+
+                        // Populate Series ComboBox
+                        SAPbouiCOM.ComboBox CBSERISE = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBSERISE").Specific;
+                      
+                        // Get selected value from CBSERISE
+                        string selectedValue = CBSERISE.Value;
+                        if (string.IsNullOrEmpty(selectedValue))
                         {
-                            string sqlQuery = $@"SELECT ""ItmsGrpCod"", ""ItmsGrpNam"" FROM ""OITB"" WHERE ""U_SERIES"" = {seriesNumeric}";
-                            SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
-                            Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery);
+                            // ── Get value from Form 9999 Matrix ──
+                            SAPbouiCOM.Form frm9999 = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                            SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)frm9999.Items.Item("7").Specific;
+
+                            int rowSelected = oMatrix.GetNextSelectedRow(0, SAPbouiCOM.BoOrderType.ot_RowOrder);
+
+                            if (rowSelected > 0)
+                            {
+                                selectedValue = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_SERIES").Cells.Item(rowSelected).Specific).Value;
+                            }
                         }
-                        else
+
+                        if (!string.IsNullOrEmpty(selectedValue))
                         {
-                            Application.SBO_Application.StatusBar.SetText("Invalid Series value. Must be a number.",
-                                SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                            if (int.TryParse(selectedValue, out int seriesNumeric))
+                            {
+                                string sqlQuery = $@"SELECT ""ItmsGrpCod"", ""ItmsGrpNam"" FROM ""OITB"" WHERE ""U_SERIES"" = {seriesNumeric}";
+                                SAPbouiCOM.ComboBox CBIGRCOD = (SAPbouiCOM.ComboBox)ofrm.Items.Item("CBIGRCOD").Specific;
+                                Global.GFunc.setComboBoxValue(CBIGRCOD, sqlQuery);
+                            }
+                            else
+                            {
+                                Application.SBO_Application.StatusBar.SetText("Invalid Series value. Must be a number.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                            }
                         }
+
+                        ofrm.Freeze(false);
                     }
                 }
+                catch (Exception ex)
+                {
+                    Application.SBO_Application.StatusBar.SetText("Error after button press: " + ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                }
             }
+
 
 
 
